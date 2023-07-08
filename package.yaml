@@ -3,23 +3,17 @@ version: 0.1.0.0
 
 dependencies:
   - base >= 4.7 && < 5
-
-ghc-options:
-  - -Wall
-  - -Wcompat
-  - -Widentities
-  - -Wincomplete-record-updates
-  - -Wincomplete-uni-patterns
-  - -Wmissing-export-lists
-  - -Wmissing-home-modules
-  - -Wpartial-fields
-  - -Wredundant-constraints
+  - array
 
 library:
   source-dirs: src
 
+build-tools:
+  - alex
+  - happy
+
 executables:
-  mini-javascript-exe:
+  MJS:
     main: Main.hs
     source-dirs: app
     ghc-options:
