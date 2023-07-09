@@ -8,6 +8,7 @@ $digit = 0-9
 
 tokens :-
   $white+                       ;
+  "//".*                        ;
   $digit+                       { \s -> TokenNum (read s) }
   \+                            { \s -> TokenAdd }
   \-                            { \s -> TokenSub }
