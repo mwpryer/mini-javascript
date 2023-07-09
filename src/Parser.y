@@ -9,7 +9,11 @@ import Declare
 %error { parseError }
 
 %token
-    num  { TokenNum $$ }
+    var     { TokenVar }
+    id      { TokenSym $$ }
+    num     { TokenNum $$ }
+    ';'     { TokenSemi }
+    '='     { TokenAssign }
     '+'     { TokenAdd }
     '-'     { TokenSub }
     '*'     { TokenMult }
@@ -18,20 +22,24 @@ import Declare
     '('     { TokenLBracket }
     ')'     { TokenRBracket }
 
+%right ';'
+%right '='
 %left '+' '-'
 %left '*' '/'
-%left UMINUS
 %right '**'
+%left UMINUS
 %%
 
-Exp : Exp '+' Exp           { Add $1 $3 }
-    | Exp '-' Exp           { Sub $1 $3 }
-    | Exp '*' Exp           { Mult $1 $3 }
-    | Exp '/' Exp           { Div $1 $3 }
-    | Exp '**' Exp          { Pow $1 $3 }
-    | '-' Exp %prec UMINUS  { Neg $2 }
-    | '(' Exp ')'           { $2 }
-    | num                { Num $1 }
+Exp : var id '=' Exp ';' Exp    { Decl $2 $4 $6 }
+    | id                        { Var $1 }
+    | num                       { Num $1 }
+    | Exp '+' Exp               { Add $1 $3 }
+    | Exp '-' Exp               { Sub $1 $3 }
+    | Exp '*' Exp               { Mult $1 $3 }
+    | Exp '/' Exp               { Div $1 $3 }
+    | Exp '**' Exp              { Pow $1 $3 }
+    | '-' Exp %prec UMINUS      { Neg $2 }
+    | '(' Exp ')'               { $2 }
 
 {
 parseError _ = error "Parse error"

@@ -5,11 +5,15 @@ module Lexer where
 %wrapper "basic"
 
 $digit = 0-9
+$alpha = [a-zA-Z]
 
 tokens :-
   $white+                       ;
   "//".*                        ;
+  var                           { \s -> TokenVar}
   $digit+                       { \s -> TokenNum (read s) }
+  \;                            { \s -> TokenSemi }
+  \=                            { \s -> TokenAssign }
   \+                            { \s -> TokenAdd }
   \-                            { \s -> TokenSub }
   \*                            { \s -> TokenMult }
@@ -17,10 +21,15 @@ tokens :-
   \*\*                          { \s -> TokenPow }
   \(                            { \s -> TokenLBracket }
   \)                            { \s -> TokenRBracket }
+  $alpha [$alpha $digit \_ \']* { \s -> TokenSym s}
 
 {
 data Token
-  = TokenNum Int
+  = TokenVar
+  | TokenSym String
+  | TokenNum Int
+  | TokenSemi
+  | TokenAssign
   | TokenAdd
   | TokenSub
   | TokenMult
