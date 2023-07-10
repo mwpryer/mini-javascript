@@ -11,7 +11,9 @@ tokens :-
   $white+                       ;
   "//".*                        ;
   var                           { \s -> TokenVar}
-  $digit+                       { \s -> TokenNum (read s) }
+  $digit+                       { \s -> TokenInt (read s) }
+  true                          { \s -> TokenTrue }
+  false                         { \s -> TokenFalse }
   \;                            { \s -> TokenSemi }
   \=                            { \s -> TokenAssign }
   \+                            { \s -> TokenAdd }
@@ -21,13 +23,20 @@ tokens :-
   \*\*                          { \s -> TokenPow }
   \(                            { \s -> TokenLBracket }
   \)                            { \s -> TokenRBracket }
+  \=\=                          { \s -> TokenEq}
+  \!\=                          { \s -> TokenIneq}
+  \!                            { \s -> TokenNot}
+  \&\&                          { \s -> TokenAnd}
+  \|\|                          { \s -> TokenOr}
   $alpha [$alpha $digit \_ \']* { \s -> TokenSym s}
 
 {
 data Token
   = TokenVar
   | TokenSym String
-  | TokenNum Int
+  | TokenInt Int
+  | TokenTrue
+  | TokenFalse
   | TokenSemi
   | TokenAssign
   | TokenAdd
@@ -37,6 +46,11 @@ data Token
   | TokenPow
   | TokenLBracket
   | TokenRBracket
+  | TokenEq
+  | TokenIneq
+  | TokenNot
+  | TokenAnd
+  | TokenOr
   deriving (Eq, Show)
 
 scanTokens = alexScanTokens
