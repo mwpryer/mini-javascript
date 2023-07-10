@@ -20,6 +20,7 @@ tokens :-
   \-                            { \s -> TokenSub }
   \*                            { \s -> TokenMult }
   \/                            { \s -> TokenDiv }
+  \%                            { \s -> TokenMod}
   \*\*                          { \s -> TokenPow }
   \(                            { \s -> TokenLBracket }
   \)                            { \s -> TokenRBracket }
@@ -43,6 +44,7 @@ data Token
   | TokenSub
   | TokenMult
   | TokenDiv
+  | TokenMod
   | TokenPow
   | TokenLBracket
   | TokenRBracket

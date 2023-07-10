@@ -20,6 +20,7 @@ import Declare
     '-'     { TokenSub }
     '*'     { TokenMult }
     '/'     { TokenDiv }
+    '%'     { TokenMod }
     '**'    { TokenPow }
     '('     { TokenLBracket }
     ')'     { TokenRBracket }
@@ -35,7 +36,7 @@ import Declare
 %left '&&'
 %left '==' '!='
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %right '**'
 %nonassoc '!' UMINUS 
 %left '(' ')'
@@ -50,6 +51,7 @@ Exp : var id '=' Exp ';' Exp    { Decl $2 $4 $6 }
     | Exp '-' Exp               { Sub $1 $3 }
     | Exp '*' Exp               { Mult $1 $3 }
     | Exp '/' Exp               { Div $1 $3 }
+    | Exp '%' Exp               { Mod $1 $3 }
     | Exp '**' Exp              { Pow $1 $3 }
     | '-' Exp %prec UMINUS      { Neg $2 }
     | '(' Exp ')'               { $2 }
