@@ -17,6 +17,8 @@ evaluate e = evaluate' e []
       (VInt i1, VInt i2) -> VInt (i1 * i2)
     evaluate' (Div e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
       (VInt i1, VInt i2) -> VInt (i1 `div` i2)
+    evaluate' (Mod e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
+      (VInt i1, VInt i2) -> VInt (i1 `mod` i2)
     evaluate' (Pow e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
       (VInt i1, VInt i2) -> VInt (i1 ^ i2)
     evaluate' (Neg e) env = case evaluate' e env of

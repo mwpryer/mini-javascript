@@ -17,6 +17,7 @@ data Exp
   | Sub Exp Exp
   | Mult Exp Exp
   | Div Exp Exp
+  | Mod Exp Exp
   | Pow Exp Exp
   | Neg Exp
   | Eq Exp Exp
@@ -37,6 +38,7 @@ showExp (Add e1 e2) = "(" ++ showExp e1 ++ " + " ++ showExp e2 ++ ")"
 showExp (Sub e1 e2) = "(" ++ showExp e1 ++ " - " ++ showExp e2 ++ ")"
 showExp (Mult e1 e2) = "(" ++ showExp e1 ++ " * " ++ showExp e2 ++ ")"
 showExp (Div e1 e2) = "(" ++ showExp e1 ++ " / " ++ showExp e2 ++ ")"
+showExp (Mod e1 e2) = "(" ++ showExp e1 ++ " % " ++ showExp e2 ++ ")"
 showExp (Pow e1 e2) = "(" ++ showExp e1 ++ " ** " ++ showExp e2 ++ ")"
 showExp (Neg e) = "(-" ++ showExp e ++ ")"
 showExp (Eq e1 e2) = "(" ++ showExp e1 ++ " == " ++ showExp e2 ++ ")"
