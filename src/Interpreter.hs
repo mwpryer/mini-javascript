@@ -33,12 +33,14 @@ evaluate e = evaluate' e []
     evaluate' (Lit v) env = v
     evaluate' (Unary op e) env = unary op (evaluate' e env)
     evaluate' (Binary op e1 e2) env = binary op (evaluate' e1 env) (evaluate' e2 env)
-    -- Search environment for variable (left to right)
-    evaluate' (Var x) env = fromJust (lookup x env)
+    -- Search environment for variable (left to right) and evaluate it under its closure
+    evaluate' (Var x) env = evaluate' e env'
+      where
+        (ExpClosure (e, env')) = fromJust (lookup x env)
     evaluate' (Decl x e body) env = evaluate' body newEnv
       where
         -- Prepend new variable binding to the environment to evaluate the body
-        newEnv = (x, evaluate' e newEnv) : env
+        newEnv = (x, ExpClosure (e, newEnv)) : env
     evaluate' (If cond e1 e2) env = if b then evaluate' e1 env else evaluate' e2 env
       where
         -- Evaluate condition expression to determine which branch to take
@@ -49,4 +51,4 @@ evaluate e = evaluate' e []
       where
         (VClosure x body closeEnv) = evaluate' f env
         -- Prepend new binding to the closure environment to evaluate the body
-        newEnv = (x, evaluate' arg env) : closeEnv
+        newEnv = (x, ExpClosure (arg, env)) : closeEnv
