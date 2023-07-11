@@ -3,34 +3,37 @@ module Interpreter where
 import Data.Maybe
 import Declare
 import Parser
+import Prelude hiding (GT, LT)
+
+unary :: UnaryOp -> Value -> Value
+unary Neg (VInt n) = VInt (-n)
+unary Not (VBool b) = VBool (not b)
+
+binary :: BinaryOp -> Value -> Value -> Value
+binary Add (VInt i1) (VInt i2) = VInt (i1 + i2)
+binary Sub (VInt i1) (VInt i2) = VInt (i1 - i2)
+binary Mult (VInt i1) (VInt i2) = VInt (i1 * i2)
+binary Div (VInt i1) (VInt i2) = VInt (i1 `div` i2)
+binary Mod (VInt i1) (VInt i2) = VInt (i1 `mod` i2)
+binary Pow (VInt i1) (VInt i2) = VInt (i1 ^ i2)
+binary Eq (VInt i1) (VInt i2) = VBool (i1 == i2)
+binary Eq (VBool b1) (VBool b2) = VBool (b1 == b2)
+binary Ineq (VInt i1) (VInt i2) = VBool (i1 /= i2)
+binary Ineq (VBool b1) (VBool b2) = VBool (b1 /= b2)
+binary And (VBool b1) (VBool b2) = VBool (b1 && b2)
+binary Or (VBool b1) (VBool b2) = VBool (b1 || b2)
+binary LT (VInt i1) (VInt i2) = VBool (i1 < i2)
+binary LE (VInt i1) (VInt i2) = VBool (i1 <= i2)
+binary GT (VInt i1) (VInt i2) = VBool (i1 > i2)
+binary GE (VInt i1) (VInt i2) = VBool (i1 >= i2)
 
 evaluate :: Exp -> Value
 evaluate e = evaluate' e []
   where
     evaluate' :: Exp -> Env -> Value
     evaluate' (Lit v) env = v
-    evaluate' (Add e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
-      (VInt i1, VInt i2) -> VInt (i1 + i2)
-    evaluate' (Sub e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
-      (VInt i1, VInt i2) -> VInt (i1 - i2)
-    evaluate' (Mult e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
-      (VInt i1, VInt i2) -> VInt (i1 * i2)
-    evaluate' (Div e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
-      (VInt i1, VInt i2) -> VInt (i1 `div` i2)
-    evaluate' (Mod e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
-      (VInt i1, VInt i2) -> VInt (i1 `mod` i2)
-    evaluate' (Pow e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
-      (VInt i1, VInt i2) -> VInt (i1 ^ i2)
-    evaluate' (Neg e) env = case evaluate' e env of
-      (VInt i) -> VInt (-i)
-    evaluate' (Eq e1 e2) env = VBool (evaluate' e1 env == evaluate' e2 env)
-    evaluate' (Ineq e1 e2) env = VBool (evaluate' e1 env /= evaluate' e2 env)
-    evaluate' (Not e) env = case evaluate' e env of
-      (VBool b) -> VBool (not b)
-    evaluate' (And e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
-      (VBool b1, VBool b2) -> VBool (b1 && b2)
-    evaluate' (Or e1 e2) env = case (evaluate' e1 env, evaluate' e2 env) of
-      (VBool b1, VBool b2) -> VBool (b1 || b2)
+    evaluate' (Unary op e) env = unary op (evaluate' e env)
+    evaluate' (Binary op e1 e2) env = binary op (evaluate' e1 env) (evaluate' e2 env)
     evaluate' (Var x) env = fromJust (lookup x env) -- Search environment for variable (left to right)
     evaluate' (Decl x e body) env = evaluate' body newEnv
       where
