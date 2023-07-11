@@ -2,7 +2,6 @@ module Interpreter where
 
 import Data.Maybe
 import Declare
-import Parser
 import Prelude hiding (GT, LT)
 
 unary :: UnaryOp -> Value -> Value
@@ -34,7 +33,8 @@ evaluate e = evaluate' e []
     evaluate' (Lit v) env = v
     evaluate' (Unary op e) env = unary op (evaluate' e env)
     evaluate' (Binary op e1 e2) env = binary op (evaluate' e1 env) (evaluate' e2 env)
-    evaluate' (Var x) env = fromJust (lookup x env) -- Search environment for variable (left to right)
+    -- Search environment for variable (left to right)
+    evaluate' (Var x) env = fromJust (lookup x env)
     evaluate' (Decl x e body) env = evaluate' body newEnv
       where
         -- Prepend new variable binding to the environment to evaluate the body
@@ -43,3 +43,10 @@ evaluate e = evaluate' e []
       where
         -- Evaluate condition expression to determine which branch to take
         (VBool b) = evaluate' cond env
+    -- Create closure with current environment for static scoping
+    evaluate' (Func x body) env = VClosure x body env
+    evaluate' (Call f arg) env = evaluate' body newEnv
+      where
+        (VClosure x body closeEnv) = evaluate' f env
+        -- Prepend new binding to the closure environment to evaluate the body
+        newEnv = (x, evaluate' arg env) : closeEnv

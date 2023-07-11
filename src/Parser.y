@@ -17,6 +17,7 @@ import Prelude hiding (GT, LT)
     false   { TokenFalse }
     if      { TokenIf }
     else    { TokenElse }
+    func    { TokenFunc }
     ';'     { TokenSemi }
     '='     { TokenAssign }
     '+'     { TokenAdd }
@@ -54,6 +55,8 @@ import Prelude hiding (GT, LT)
 
 Exp : var id '=' Exp ';' Exp                        { Decl $2 $4 $6 }
     | if '(' Exp ')' '{' Exp '}' else '{' Exp '}'   { If $3 $6 $10 }
+    | func '(' id ')' '{' Exp '}'                   { Func $3 $6 }
+    | Exp '(' Exp ')'                               { Call $1 $3 }
     | id                                            { Var $1 }
     | int                                           { Lit (VInt $1) }
     | true                                          { Lit (VBool True) }
