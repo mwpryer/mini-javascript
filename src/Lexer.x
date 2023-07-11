@@ -22,13 +22,17 @@ tokens :-
   \/                            { \s -> TokenDiv }
   \%                            { \s -> TokenMod}
   \*\*                          { \s -> TokenPow }
-  \(                            { \s -> TokenLBracket }
-  \)                            { \s -> TokenRBracket }
   \=\=                          { \s -> TokenEq}
   \!\=                          { \s -> TokenIneq}
   \!                            { \s -> TokenNot}
   \&\&                          { \s -> TokenAnd}
   \|\|                          { \s -> TokenOr}
+  \<                            { \s -> TokenLT}
+  \<\=                          { \s -> TokenLE}
+  \>                            { \s -> TokenGT}
+  \>\=                          { \s -> TokenGE}
+  \(                            { \s -> TokenLBracket }
+  \)                            { \s -> TokenRBracket }
   $alpha [$alpha $digit \_ \']* { \s -> TokenSym s}
 
 {
@@ -46,13 +50,17 @@ data Token
   | TokenDiv
   | TokenMod
   | TokenPow
-  | TokenLBracket
-  | TokenRBracket
   | TokenEq
   | TokenIneq
   | TokenNot
   | TokenAnd
   | TokenOr
+  | TokenLT
+  | TokenLE
+  | TokenGT
+  | TokenGE
+  | TokenLBracket
+  | TokenRBracket
   deriving (Eq, Show)
 
 scanTokens = alexScanTokens
