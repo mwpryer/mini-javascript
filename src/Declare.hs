@@ -82,8 +82,11 @@ showExp (If cond e1 e2) = "if (" ++ showExp cond ++ ") { " ++ showExp e1 ++ " } 
 showExp (Func param body) = "function (" ++ param ++ ") { " ++ showExp body ++ " }"
 showExp (Call f arg) = showExp f ++ "(" ++ showExp arg ++ ")"
 
+-- Variable bindings are now closures to satisfy call-by-name evaluation
+newtype ExpClosure = ExpClosure (Exp, Env) deriving (Eq)
+
 -- Represents association of a variable with its value
-type Binding = (String, Value)
+type Binding = (String, ExpClosure)
 
 -- Execution environment for mapping variables to values
 type Env = [Binding]
