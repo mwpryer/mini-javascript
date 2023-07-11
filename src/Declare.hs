@@ -42,6 +42,7 @@ data Exp
   | Binary BinaryOp Exp Exp
   | Var String
   | Decl String Exp Exp
+  | If Exp Exp Exp
 
 instance Show Exp where
   show = showExp
@@ -57,6 +58,7 @@ showExp (Binary op e1 e2) = "(" ++ showExp e1 ++ " " ++ fromJust (lookup op ops)
     ops = [(Add, "+"), (Sub, "-"), (Mult, "*"), (Div, "/"), (Mod, "%"), (Pow, "**"), (Eq, "=="), (Ineq, "!="), (And, "&&"), (Or, "||"), (LT, "<"), (LE, "<="), (GT, ">"), (GE, ">=")]
 showExp (Var x) = x
 showExp (Decl x e body) = "var " ++ x ++ " = " ++ showExp e ++ "; " ++ showExp body
+showExp (If cond e1 e2) = "if (" ++ showExp cond ++ ") { " ++ showExp e1 ++ " } else { " ++ showExp e2 ++ " }"
 
 -- Represents association of a variable with its value
 type Binding = (String, Value)

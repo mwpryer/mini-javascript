@@ -14,6 +14,8 @@ tokens :-
   $digit+                       { \s -> TokenInt (read s) }
   true                          { \s -> TokenTrue }
   false                         { \s -> TokenFalse }
+  if                            { \s -> TokenIf }
+  else                          { \s -> TokenElse }
   \;                            { \s -> TokenSemi }
   \=                            { \s -> TokenAssign }
   \+                            { \s -> TokenAdd }
@@ -33,6 +35,8 @@ tokens :-
   \>\=                          { \s -> TokenGE}
   \(                            { \s -> TokenLBracket }
   \)                            { \s -> TokenRBracket }
+  \{                            { \s -> TokenLCBracket }
+  \}                            { \s -> TokenRCBracket }
   $alpha [$alpha $digit \_ \']* { \s -> TokenSym s}
 
 {
@@ -42,6 +46,8 @@ data Token
   | TokenInt Int
   | TokenTrue
   | TokenFalse
+  | TokenIf
+  | TokenElse
   | TokenSemi
   | TokenAssign
   | TokenAdd
@@ -61,6 +67,8 @@ data Token
   | TokenGE
   | TokenLBracket
   | TokenRBracket
+  | TokenLCBracket
+  | TokenRCBracket
   deriving (Eq, Show)
 
 scanTokens = alexScanTokens
