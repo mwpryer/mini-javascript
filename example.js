@@ -11,4 +11,9 @@
 // var a = true; var b = false; a && b != false // false
 // var a = 1; var b = 2; a + 1 == b || false // true
 // 1 <= 1 // true
--1 > 2 // false
+// -1 > 2 // false
+
+// Conditional expressions
+// if (2 + 2 == 4) { true } else { false } // true
+// var a = true; if (var x = 3; var y = 1; x % 2 == y) { a } else { !a } // true
+var x = 2; if (x == 2) { x / 2 } else { -1 } // 1

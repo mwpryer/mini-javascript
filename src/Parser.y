@@ -15,6 +15,8 @@ import Prelude hiding (GT, LT)
     int     { TokenInt $$ }
     true    { TokenTrue }
     false   { TokenFalse }
+    if      { TokenIf }
+    else    { TokenElse }
     ';'     { TokenSemi }
     '='     { TokenAssign }
     '+'     { TokenAdd }
@@ -34,6 +36,8 @@ import Prelude hiding (GT, LT)
     '>='    { TokenGE }
     '('     { TokenLBracket }
     ')'     { TokenRBracket }
+    '{'     { TokenLCBracket }
+    '}'     { TokenRCBracket }
 
 %right ';'
 %right '='
@@ -48,28 +52,29 @@ import Prelude hiding (GT, LT)
 %left '(' ')'
 %%
 
-Exp : var id '=' Exp ';' Exp    { Decl $2 $4 $6 }
-    | id                        { Var $1 }
-    | int                       { Lit (VInt $1) }
-    | true                      { Lit (VBool True) }
-    | false                     { Lit (VBool False) }
-    | Exp '+' Exp               { Binary Add $1 $3 }
-    | Exp '-' Exp               { Binary Sub $1 $3 }
-    | Exp '*' Exp               { Binary Mult $1 $3 }
-    | Exp '/' Exp               { Binary Div $1 $3 }
-    | Exp '%' Exp               { Binary Mod $1 $3 }
-    | Exp '**' Exp              { Binary Pow $1 $3 }
-    | '-' Exp %prec UMINUS      { Unary Neg $2 }
-    | Exp '==' Exp              { Binary Eq $1 $3 }
-    | Exp '!=' Exp              { Binary Ineq $1 $3 }
-    | '!' Exp                   { Unary Not $2 }
-    | Exp '&&' Exp              { Binary And $1 $3 }
-    | Exp '||' Exp              { Binary Or $1 $3 }
-    | Exp '<' Exp               { Binary LT $1 $3 }
-    | Exp '<=' Exp              { Binary LE $1 $3 }
-    | Exp '>' Exp               { Binary GT $1 $3 }
-    | Exp '>=' Exp              { Binary GE $1 $3 }
-    | '(' Exp ')'               { $2 }
+Exp : var id '=' Exp ';' Exp                        { Decl $2 $4 $6 }
+    | if '(' Exp ')' '{' Exp '}' else '{' Exp '}'   { If $3 $6 $10 }
+    | id                                            { Var $1 }
+    | int                                           { Lit (VInt $1) }
+    | true                                          { Lit (VBool True) }
+    | false                                         { Lit (VBool False) }
+    | Exp '+' Exp                                   { Binary Add $1 $3 }
+    | Exp '-' Exp                                   { Binary Sub $1 $3 }
+    | Exp '*' Exp                                   { Binary Mult $1 $3 }
+    | Exp '/' Exp                                   { Binary Div $1 $3 }
+    | Exp '%' Exp                                   { Binary Mod $1 $3 }
+    | Exp '**' Exp                                  { Binary Pow $1 $3 }
+    | '-' Exp %prec UMINUS                          { Unary Neg $2 }
+    | Exp '==' Exp                                  { Binary Eq $1 $3 }
+    | Exp '!=' Exp                                  { Binary Ineq $1 $3 }
+    | '!' Exp                                       { Unary Not $2 }
+    | Exp '&&' Exp                                  { Binary And $1 $3 }
+    | Exp '||' Exp                                  { Binary Or $1 $3 }
+    | Exp '<' Exp                                   { Binary LT $1 $3 }
+    | Exp '<=' Exp                                  { Binary LE $1 $3 }
+    | Exp '>' Exp                                   { Binary GT $1 $3 }
+    | Exp '>=' Exp                                  { Binary GE $1 $3 }
+    | '(' Exp ')'                                   { $2 }
 
 {
 parseError _ = error "Parse error"

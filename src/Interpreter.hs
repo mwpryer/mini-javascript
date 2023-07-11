@@ -39,3 +39,7 @@ evaluate e = evaluate' e []
       where
         -- Prepend new variable binding to the environment to evaluate the body
         newEnv = (x, evaluate' e env) : env
+    evaluate' (If cond e1 e2) env = if b then evaluate' e1 env else evaluate' e2 env
+      where
+        -- Evaluate condition expression to determine which branch to take
+        (VBool b) = evaluate' cond env
