@@ -16,4 +16,32 @@
 // Conditional expressions
 // if (2 + 2 == 4) { true } else { false } // true
 // var a = true; if (var x = 3; var y = 1; x % 2 == y) { a } else { !a } // true
-var x = 2; if (x == 2) { x / 2 } else { -1 } // 1
+// var x = 2; if (x == 2) { x / 2 } else { -1 } // 1
+
+// First class functions
+// var abs = function (x) {
+//   if (x > 0) {
+//     x
+//   } else {
+//     -x
+//   }
+// };
+// abs(-3) // 3
+
+// var x = 2;
+// var f = function (y) {
+//   y + x
+// };
+// var x = 3;
+// f(5) // 7 (lexical scoping)
+
+var x = 9;
+var f = function (foo) {
+  foo(x)
+};
+var add = function (x) {
+  function (y) {
+    x + y
+  }
+};
+f(add(1)) // 10 (partially applied function)

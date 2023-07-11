@@ -16,6 +16,7 @@ tokens :-
   false                         { \s -> TokenFalse }
   if                            { \s -> TokenIf }
   else                          { \s -> TokenElse }
+  function                      { \s -> TokenFunc }
   \;                            { \s -> TokenSemi }
   \=                            { \s -> TokenAssign }
   \+                            { \s -> TokenAdd }
@@ -48,6 +49,7 @@ data Token
   | TokenFalse
   | TokenIf
   | TokenElse
+  | TokenFunc
   | TokenSemi
   | TokenAssign
   | TokenAdd
