@@ -35,13 +35,23 @@
 // var x = 3;
 // f(5) // 7 (lexical scoping)
 
-var x = 9;
-var f = function (foo) {
-  foo(x)
-};
-var add = function (x) {
-  function (y) {
-    x + y
+// var x = 9;
+// var f = function (foo) {
+//   foo(x)
+// };
+// var add = function (x) {
+//   function (y) {
+//     x + y
+//   }
+// };
+// f(add(1)) // 10 (partially applied function)
+
+// Recursive functions
+var factorial = function (n) {
+  if (n == 0) {
+    1
+  } else {
+    n * factorial(n - 1)
   }
 };
-f(add(1)) // 10 (partially applied function)
+factorial(4) // 24

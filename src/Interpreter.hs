@@ -38,7 +38,7 @@ evaluate e = evaluate' e []
     evaluate' (Decl x e body) env = evaluate' body newEnv
       where
         -- Prepend new variable binding to the environment to evaluate the body
-        newEnv = (x, evaluate' e env) : env
+        newEnv = (x, evaluate' e newEnv) : env
     evaluate' (If cond e1 e2) env = if b then evaluate' e1 env else evaluate' e2 env
       where
         -- Evaluate condition expression to determine which branch to take
