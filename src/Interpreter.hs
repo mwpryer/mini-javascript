@@ -26,29 +26,29 @@ binary LE (VInt i1) (VInt i2) = VBool (i1 <= i2)
 binary GT (VInt i1) (VInt i2) = VBool (i1 > i2)
 binary GE (VInt i1) (VInt i2) = VBool (i1 >= i2)
 
-evaluate :: Exp -> Value
-evaluate e = evaluate' e []
+evaluate :: Exp -> Env -> Value
+evaluate (Lit v) env = v
+evaluate (Unary op e) env = unary op (evaluate e env)
+evaluate (Binary op e1 e2) env = binary op (evaluate e1 env) (evaluate e2 env)
+-- Search environment for variable (left to right) and evaluate it under its closure
+evaluate (Var x) env = evaluate e env'
   where
-    evaluate' :: Exp -> Env -> Value
-    evaluate' (Lit v) env = v
-    evaluate' (Unary op e) env = unary op (evaluate' e env)
-    evaluate' (Binary op e1 e2) env = binary op (evaluate' e1 env) (evaluate' e2 env)
-    -- Search environment for variable (left to right) and evaluate it under its closure
-    evaluate' (Var x) env = evaluate' e env'
-      where
-        (ExpClosure (e, env')) = fromJust (lookup x env)
-    evaluate' (Decl x e body) env = evaluate' body newEnv
-      where
-        -- Prepend new variable binding to the environment to evaluate the body
-        newEnv = (x, ExpClosure (e, newEnv)) : env
-    evaluate' (If cond e1 e2) env = if b then evaluate' e1 env else evaluate' e2 env
-      where
-        -- Evaluate condition expression to determine which branch to take
-        (VBool b) = evaluate' cond env
-    -- Create closure with current environment for static scoping
-    evaluate' (Func x body) env = VClosure x body env
-    evaluate' (Call f arg) env = evaluate' body newEnv
-      where
-        (VClosure x body closeEnv) = evaluate' f env
-        -- Prepend new binding to the closure environment to evaluate the body
-        newEnv = (x, ExpClosure (arg, env)) : closeEnv
+    (ExpClosure (e, env')) = fromJust (lookup x env)
+evaluate (Decl x e body) env = evaluate body newEnv
+  where
+    -- Prepend new variable binding to the environment to evaluate the body
+    newEnv = (x, ExpClosure (e, newEnv)) : env
+evaluate (If cond e1 e2) env = if b then evaluate e1 env else evaluate e2 env
+  where
+    -- Evaluate condition expression to determine which branch to take
+    (VBool b) = evaluate cond env
+-- Create closure with current environment for static scoping
+evaluate (Func x body) env = VClosure x body env
+evaluate (Call f arg) env = evaluate body newEnv
+  where
+    (VClosure x body closeEnv) = evaluate f env
+    -- Prepend new binding to the closure environment to evaluate the body
+    newEnv = (x, ExpClosure (arg, env)) : closeEnv
+
+execute :: Exp -> Value
+execute e = evaluate e []

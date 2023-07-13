@@ -22,3 +22,6 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - mini-javascript
+      - repline
+      - mtl
+      - text
