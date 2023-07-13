@@ -966,36 +966,22 @@ happyNewToken action sts stk (tk:tks) =
 happyError_ explist 34 tk tks = happyError' (tks, explist)
 happyError_ explist _ tk tks = happyError' ((tk:tks), explist)
 
-newtype HappyIdentity a = HappyIdentity a
-happyIdentity = HappyIdentity
-happyRunIdentity (HappyIdentity a) = a
-
-instance Prelude.Functor HappyIdentity where
-    fmap f (HappyIdentity a) = HappyIdentity (f a)
-
-instance Applicative HappyIdentity where
-    pure  = HappyIdentity
-    (<*>) = ap
-instance Prelude.Monad HappyIdentity where
-    return = pure
-    (HappyIdentity p) >>= q = q p
-
-happyThen :: () => HappyIdentity a -> (a -> HappyIdentity b) -> HappyIdentity b
+happyThen :: () => Either String a -> (a -> Either String b) -> Either String b
 happyThen = (Prelude.>>=)
-happyReturn :: () => a -> HappyIdentity a
+happyReturn :: () => a -> Either String a
 happyReturn = (Prelude.return)
 happyThen1 m k tks = (Prelude.>>=) m (\a -> k a tks)
-happyReturn1 :: () => a -> b -> HappyIdentity a
+happyReturn1 :: () => a -> b -> Either String a
 happyReturn1 = \a tks -> (Prelude.return) a
-happyError' :: () => ([(Token)], [Prelude.String]) -> HappyIdentity a
-happyError' = HappyIdentity Prelude.. (\(tokens, _) -> parseError tokens)
-parser tks = happyRunIdentity happySomeParser where
+happyError' :: () => ([(Token)], [Prelude.String]) -> Either String a
+happyError' = (\(tokens, _) -> parseError tokens)
+parser tks = happySomeParser where
  happySomeParser = happyThen (happyParse action_0 tks) (\x -> case x of {HappyAbsSyn4 z -> happyReturn z; _other -> notHappyAtAll })
 
 happySeq = happyDontSeq
 
 
-parseError _ = error "Parse error"
+parseError _ = Left "Parse error"
 parseExpr = parser . scanTokens
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 -- $Id: GenericTemplate.hs,v 1.26 2005/01/14 14:47:22 simonmar Exp $

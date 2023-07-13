@@ -51,6 +51,7 @@ import Prelude hiding (GT, LT)
 %right '**'
 %nonassoc '!' UMINUS 
 %left '(' ')'
+%monad { Either String }
 %%
 
 Exp : var id '=' Exp ';' Exp                        { Decl $2 $4 $6 }
@@ -80,6 +81,6 @@ Exp : var id '=' Exp ';' Exp                        { Decl $2 $4 $6 }
     | '(' Exp ')'                                   { $2 }
 
 {
-parseError _ = error "Parse error"
+parseError _ = Left "Parse error"
 parseExpr = parser . scanTokens
 }

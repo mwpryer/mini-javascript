@@ -40,4 +40,7 @@ executable MJS
       array
     , base >=4.7 && <5
     , mini-javascript
+    , mtl
+    , repline
+    , text
   default-language: Haskell2010
