@@ -39,6 +39,9 @@ import Prelude hiding (GT, LT)
     ')'     { TokenRBracket }
     '{'     { TokenLCBracket }
     '}'     { TokenRCBracket }
+    '['     { TokenLSBracket }
+    ']'     { TokenRSBracket }
+    ','     { TokenComma }
 
 %right ';'
 %right '='
@@ -50,6 +53,7 @@ import Prelude hiding (GT, LT)
 %left '*' '/' '%'
 %right '**'
 %nonassoc '!' UMINUS 
+%left '[' ']'
 %left '(' ')'
 %monad { Either String }
 %%
@@ -58,6 +62,8 @@ Exp : var id '=' Exp ';' Exp                        { Decl $2 $4 $6 }
     | if '(' Exp ')' '{' Exp '}' else '{' Exp '}'   { If $3 $6 $10 }
     | func '(' id ')' '{' Exp '}'                   { Func $3 $6 }
     | Exp '(' Exp ')'                               { Call $1 $3 }
+    | '[' ExpList ']'                               { Arr $2 }
+    | Exp '[' Exp ']'                               { Index $1 $3 }
     | id                                            { Var $1 }
     | int                                           { Lit (VInt $1) }
     | true                                          { Lit (VBool True) }
@@ -79,6 +85,10 @@ Exp : var id '=' Exp ';' Exp                        { Decl $2 $4 $6 }
     | Exp '>' Exp                                   { Binary GT $1 $3 }
     | Exp '>=' Exp                                  { Binary GE $1 $3 }
     | '(' Exp ')'                                   { $2 }
+    | Exp ';'                                       { $1 }
+
+ExpList : Exp ',' ExpList                           { $1 : $3 }
+        | Exp                                       { [$1] }
 
 {
 parseError _ = Left "Parse error"

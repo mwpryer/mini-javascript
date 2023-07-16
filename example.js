@@ -47,11 +47,38 @@
 // f(add(1)) // 10 (partially applied function)
 
 // Recursive functions
-var factorial = function (n) {
-  if (n == 0) {
-    1
-  } else {
-    n * factorial(n - 1)
-  }
+// var factorial = function (n) {
+//   if (n == 0) {
+//     1
+//   } else {
+//     n * factorial(n - 1)
+//   }
+// };
+// factorial(4) // 24
+
+// Multi-dimensional arrays
+// var a = [1, [10, 11], true]; a[1][0] // 10
+
+// var a = [10 ** 0, 10 ** 1, 10 ** 2];
+// var f = function (x) {
+//   if (x >= 3) {
+//     2
+//   } else {
+//     if (x < 0) {
+//       0
+//     } else {
+//       x
+//     }
+//   }
+// };
+// a[f(5)] // 100
+
+var a = [[1,2], [3,4]];
+var b = [[5, 6], [7, 8]];
+var c = [a, b];
+var add2d = function (arrs) {
+  var m = arrs[0];
+  var n = arrs[1];
+  [[m[0][0] + n[0][0], m[0][1] + n[0][1]], [m[1][0] + n[1][0], m[1][1] + n[1][1]]]
 };
-factorial(4) // 24
+add2d(c)  // [[6, 8], [10, 12]]
