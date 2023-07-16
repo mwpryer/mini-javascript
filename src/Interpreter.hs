@@ -49,6 +49,11 @@ evaluate (Call f arg) env = evaluate body newEnv
     (VClosure x body closeEnv) = evaluate f env
     -- Prepend new binding to the closure environment to evaluate the body
     newEnv = (x, ExpClosure (arg, env)) : closeEnv
+evaluate (Arr es) env = VArr (map (\e -> evaluate e env) es)
+evaluate (Index e1 e2) env = arr !! i
+  where
+    (VArr arr) = evaluate e1 env
+    (VInt i) = evaluate e2 env
 
 execute :: Exp -> Value
 execute e = evaluate e []

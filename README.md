@@ -21,12 +21,12 @@ A toy interpreter for a subset of the JavaScript programming language written in
 - Lexical scoping
 - Lazy (call-by-name) evaluation
 - REPL
+- Multi-dimensional arrays
 
 ### Todo
 
 - [ ] Call-by-need evaluation
 - [ ] Multiple variable declarations
-- [ ] Tuples
 - [ ] Multiple argument functions
 - [ ] Error handling
 

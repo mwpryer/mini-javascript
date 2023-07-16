@@ -1,5 +1,6 @@
 module Declare where
 
+import Data.List
 import Data.Maybe
 import Prelude hiding (GT, LT)
 
@@ -7,6 +8,7 @@ data Value
   = VInt Int
   | VBool Bool
   | VClosure String Exp Env
+  | VArr [Value]
   deriving (Eq)
 
 instance Show Value where
@@ -14,6 +16,7 @@ instance Show Value where
   show (VBool True) = "true"
   show (VBool False) = "false"
   show (VClosure {}) = "closure"
+  show (VArr vs) = "[" ++ intercalate ", " (map show vs) ++ "]"
 
 data UnaryOp
   = Neg
@@ -47,6 +50,8 @@ data Exp
   | If Exp Exp Exp
   | Func String Exp
   | Call Exp Exp
+  | Arr [Exp]
+  | Index Exp Exp
   deriving (Eq)
 
 instance Show Exp where
@@ -81,6 +86,7 @@ showExp (Decl x e body) = "var " ++ x ++ " = " ++ showExp e ++ "; " ++ showExp b
 showExp (If cond e1 e2) = "if (" ++ showExp cond ++ ") { " ++ showExp e1 ++ " } else { " ++ showExp e2 ++ " }"
 showExp (Func param body) = "function (" ++ param ++ ") { " ++ showExp body ++ " }"
 showExp (Call f arg) = showExp f ++ "(" ++ showExp arg ++ ")"
+showExp (Arr es) = "[" ++ intercalate ", " (map showExp es) ++ "]"
 
 -- Variable bindings are now closures to satisfy call-by-name evaluation
 newtype ExpClosure = ExpClosure (Exp, Env) deriving (Eq)

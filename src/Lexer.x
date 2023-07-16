@@ -38,6 +38,9 @@ tokens :-
   \)                            { \s -> TokenRBracket }
   \{                            { \s -> TokenLCBracket }
   \}                            { \s -> TokenRCBracket }
+  \[                            { \s -> TokenLSBracket }
+  \]                            { \s -> TokenRSBracket }
+  \,                            { \s -> TokenComma }
   $alpha [$alpha $digit \_ \']* { \s -> TokenSym s}
 
 {
@@ -71,6 +74,9 @@ data Token
   | TokenRBracket
   | TokenLCBracket
   | TokenRCBracket
+  | TokenLSBracket
+  | TokenRSBracket
+  | TokenComma
   deriving (Eq, Show)
 
 scanTokens = alexScanTokens
