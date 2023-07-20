@@ -60,8 +60,8 @@ import Prelude hiding (GT, LT)
 
 Exp : var id '=' Exp ';' Exp                        { Decl $2 $4 $6 }
     | if '(' Exp ')' '{' Exp '}' else '{' Exp '}'   { If $3 $6 $10 }
-    | func '(' id ')' '{' Exp '}'                   { Func $3 $6 }
-    | Exp '(' Exp ')'                               { Call $1 $3 }
+    | func '(' ParamList ')' '{' Exp '}'            { Func (PVars $3) $6 }
+    | Exp '(' ExpList ')'                           { Call $1 (Args $3) }
     | '[' ExpList ']'                               { Arr $2 }
     | Exp '[' Exp ']'                               { Index $1 $3 }
     | id                                            { Var $1 }
@@ -89,6 +89,11 @@ Exp : var id '=' Exp ';' Exp                        { Decl $2 $4 $6 }
 
 ExpList : Exp ',' ExpList                           { $1 : $3 }
         | Exp                                       { [$1] }
+        | {- empty -}                               { [] }
+
+ParamList   : id ',' ParamList                      { (PVar $1) : $3 }
+            | id                                    { [PVar $1] }
+            | {- empty -}                           { [] }
 
 {
 parseError _ = Left "Parse error"
