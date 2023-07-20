@@ -73,12 +73,27 @@
 // };
 // a[f(5)] // 100
 
-var a = [[1,2], [3,4]];
-var b = [[5, 6], [7, 8]];
-var c = [a, b];
-var add2d = function (arrs) {
-  var m = arrs[0];
-  var n = arrs[1];
-  [[m[0][0] + n[0][0], m[0][1] + n[0][1]], [m[1][0] + n[1][0], m[1][1] + n[1][1]]]
+// var a = [[1,2], [3,4]];
+// var b = [[5, 6], [7, 8]];
+// var c = [a, b];
+// var add2d = function (arrs) {
+//   var m = arrs[0];
+//   var n = arrs[1];
+//   [[m[0][0] + n[0][0], m[0][1] + n[0][1]], [m[1][0] + n[1][0], m[1][1] + n[1][1]]]
+// };
+// add2d(c)  // [[6, 8], [10, 12]]
+
+// Multiple argument functions
+// var add = function (x, y) {
+//   x + y
+// };
+// add(1, 2) // 3
+
+var addR = function (x, y) {
+  if (x == 0) {
+    y
+  } else {
+    addR(x - 1, y + 1)
+  }
 };
-add2d(c)  // [[6, 8], [10, 12]]
+addR(10, 1) // 11

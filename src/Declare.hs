@@ -4,10 +4,19 @@ import Data.List
 import Data.Maybe
 import Prelude hiding (GT, LT)
 
+data Params
+  = PVar String
+  | PVars [Params]
+  deriving (Eq)
+
+instance Show Params where
+  show (PVar x) = x
+  show (PVars ns) = intercalate ", " (map show ns)
+
 data Value
   = VInt Int
   | VBool Bool
-  | VClosure String Exp Env
+  | VClosure Params Exp Env
   | VArr [Value]
   deriving (Eq)
 
@@ -48,8 +57,9 @@ data Exp
   | Var String
   | Decl String Exp Exp
   | If Exp Exp Exp
-  | Func String Exp
+  | Func Params Exp
   | Call Exp Exp
+  | Args [Exp]
   | Arr [Exp]
   | Index Exp Exp
   deriving (Eq)
@@ -84,8 +94,9 @@ showExp (Binary op e1 e2) = "(" ++ showExp e1 ++ " " ++ fromJust (lookup op ops)
 showExp (Var x) = x
 showExp (Decl x e body) = "var " ++ x ++ " = " ++ showExp e ++ "; " ++ showExp body
 showExp (If cond e1 e2) = "if (" ++ showExp cond ++ ") { " ++ showExp e1 ++ " } else { " ++ showExp e2 ++ " }"
-showExp (Func param body) = "function (" ++ param ++ ") { " ++ showExp body ++ " }"
-showExp (Call f arg) = showExp f ++ "(" ++ showExp arg ++ ")"
+showExp (Func params body) = "function (" ++ show params ++ ") { " ++ showExp body ++ " }"
+showExp (Call f args) = showExp f ++ "(" ++ showExp args ++ ")"
+showExp (Args es) = intercalate ", " (map showExp es)
 showExp (Arr es) = "[" ++ intercalate ", " (map showExp es) ++ "]"
 
 -- Variable bindings are now closures to satisfy call-by-name evaluation

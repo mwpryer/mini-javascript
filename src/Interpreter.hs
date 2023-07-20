@@ -44,11 +44,14 @@ evaluate (If cond e1 e2) env = if b then evaluate e1 env else evaluate e2 env
     (VBool b) = evaluate cond env
 -- Create closure with current environment for static scoping
 evaluate (Func x body) env = VClosure x body env
-evaluate (Call f arg) env = evaluate body newEnv
+evaluate (Call f args) env = evaluate body newEnv
   where
-    (VClosure x body closeEnv) = evaluate f env
+    (VClosure xs body closeEnv) = evaluate f env
     -- Prepend new binding to the closure environment to evaluate the body
-    newEnv = (x, ExpClosure (arg, env)) : closeEnv
+    newEnv = buildEnv xs args ++ closeEnv
+    buildEnv :: Params -> Exp -> Env
+    buildEnv (PVars []) (Args []) = []
+    buildEnv (PVars ((PVar x : xs))) (Args (arg : args)) = (x, ExpClosure (arg, env)) : buildEnv (PVars xs) (Args args)
 evaluate (Arr es) env = VArr (map (\e -> evaluate e env) es)
 evaluate (Index e1 e2) env = arr !! i
   where
