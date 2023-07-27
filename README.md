@@ -1,31 +1,32 @@
-# Mini JavaScript
+# Mini JavaScript <!-- omit from toc -->
 
-A toy interpreter for a subset of the JavaScript programming language written in [Haskell](https://www.haskell.org/).
+A toy interpreter for a subset of the JavaScript programming language, written in [Haskell](https://www.haskell.org/).
 
-- [Mini JavaScript](#mini-javascript)
-  - [Features](#features)
-  - [Examples](#examples)
-    - [Simple Expressions](#simple-expressions)
-    - [Variable Declarations](#variable-declarations)
-    - [Conditional Expressions](#conditional-expressions)
-    - [Arrays](#arrays)
-    - [Functions](#functions)
-  - [Usage](#usage)
-    - [Basic Usage](#basic-usage)
-    - [Executable](#executable)
-    - [Read-Eval-Print Loop (REPL)](#read-eval-print-loop-repl)
-  - [Todo](#todo)
+## Table of Contents <!-- omit from toc -->
+
+- [Features](#features)
+- [Examples](#examples)
+  - [Simple Expressions](#simple-expressions)
+  - [Variable Declarations](#variable-declarations)
+  - [Conditional Expressions](#conditional-expressions)
+  - [Arrays](#arrays)
+  - [Functions](#functions)
+- [Usage](#usage)
+  - [Basic Usage](#basic-usage)
+  - [Executable](#executable)
+  - [Read-Eval-Print Loop (REPL)](#read-eval-print-loop-repl)
+- [Todo](#todo)
 
 ## Features
 
 - Arithmetic expressions
 - Boolean operations
-- Variable declarations (with the var keyword)
-- Conditional expressions (if-else)
+- Variable declarations
+- Conditional expressions
 - First class functions
 - Recursive functions
 - Lexical scoping
-- REPL
+- Read-Eval-Print Loop (REPL)
 - Multi-dimensional arrays
 - Multiple argument functions
 - Lazy (call-by-need) evaluation
@@ -89,7 +90,7 @@ a[1][0] // 10
 
 ### Functions
 
-Functions in this language are first class by nature, allowing them to be passed and returned from other functions. The syntax may seem familiar to early JavaScript users where function expressions are defined using the `function` keyword and assigned to variables. Such functions, like JavaScript, are not hoisted and cannot be used before they are defined.
+Functions in this language are first class by nature, allowing them to be passed and returned from other functions. The syntax may seem familiar to early JavaScript users where function expressions are defined using the `function` keyword and assigned to variables. Such functions, like JavaScript, are not hoisted and therefore cannot be used before they are defined.
 
 ```js
 var add = function (x) {
@@ -102,19 +103,6 @@ addOne(9) // 10
 ```
 
 Recursive functions are also possible.
-
-```js
-var factorial = function (n) {
-  if (n == 0) {
-    1
-  } else {
-    n * factorial(n - 1)
-  }
-};
-factorial(4) // 24
-```
-
-Passing multiple arguments to functions is supported.
 
 ```js
 var add = function (x, y) {

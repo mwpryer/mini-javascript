@@ -98,6 +98,7 @@ showExp (Func params body) = "function (" ++ show params ++ ") { " ++ showExp bo
 showExp (Call f args) = showExp f ++ "(" ++ showExp args ++ ")"
 showExp (Args es) = intercalate ", " (map showExp es)
 showExp (Arr es) = "[" ++ intercalate ", " (map showExp es) ++ "]"
+showExp (Index e1 e2) = showExp e1 ++ "[" ++ showExp e2 ++ "]"
 
 -- Variable bindings are closures to satisfy call-by-need evaluation
 newtype ExpClosure = ExpClosure (Exp, Env) deriving (Eq)
