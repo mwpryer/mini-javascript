@@ -25,10 +25,10 @@ A toy interpreter for a subset of the JavaScript programming language written in
 - First class functions
 - Recursive functions
 - Lexical scoping
-- Lazy (call-by-name) evaluation
 - REPL
 - Multi-dimensional arrays
 - Multiple argument functions
+- Lazy (call-by-need) evaluation
 
 ## Examples
 
@@ -67,7 +67,7 @@ var b = a;
 a + b // 18
 ```
 
-Note: this language uses call-by-name evaluation where expressions are stored directly in the execution environment instead of being evaluated to a value first. The immediate benefit of this is we can sometimes avoid wasting computational resources where declared values are never used. The drawback is that repeated use of a declaration results in repeated evaluation of that expression since evaluation is delayed to the use-point.
+Note: this language uses call-by-need evaluation, where both expressions and their values are stored in the execution environment. Upon encountering an expression for the first time it is stored directly, thereafter it is evaluated and stored as a concrete value. This is a hybrid approach between call-by-value and call-by-name evaluation to get the best of both strategies; prevent repeated evaluation of a declaration (as in call-by-value) and avoid wasting computational resources where declared values are never used (as in call-by-name).
 
 ### Conditional Expressions
 
@@ -180,7 +180,6 @@ $ :load example.js
 
 ## Todo
 
-- [ ] Call-by-need evaluation
 - [ ] Multiple variable declarations
 - [ ] Error handling
 - [ ] Mutable state

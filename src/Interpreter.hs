@@ -1,6 +1,5 @@
 module Interpreter where
 
-import Data.Maybe
 import Declare
 import Prelude hiding (GT, LT)
 
@@ -26,37 +25,49 @@ binary LE (VInt i1) (VInt i2) = VBool (i1 <= i2)
 binary GT (VInt i1) (VInt i2) = VBool (i1 > i2)
 binary GE (VInt i1) (VInt i2) = VBool (i1 >= i2)
 
-evaluate :: Exp -> Env -> Value
-evaluate (Lit v) env = v
-evaluate (Unary op e) env = unary op (evaluate e env)
-evaluate (Binary op e1 e2) env = binary op (evaluate e1 env) (evaluate e2 env)
--- Search environment for variable (left to right) and evaluate it under its closure
-evaluate (Var x) env = evaluate e env'
+evaluate :: Exp -> Env -> (Value, Env)
+evaluate (Lit v) env = (v, env)
+evaluate (Unary op e) env = (unary op v, env1)
   where
-    (ExpClosure (e, env')) = fromJust (lookup x env)
-evaluate (Decl x e body) env = evaluate body newEnv
+    (v, env1) = evaluate e env
+evaluate (Binary op e1 e2) env = (binary op v1 v2, env2)
+  where
+    (v1, env1) = evaluate e1 env
+    (v2, env2) = evaluate e2 env1
+-- Search environment for variable (left to right) and evaluate it under its closure or return its value
+evaluate (Var x) env =
+  case lookup x env of
+    Just (Left (ExpClosure (e, env1))) -> (v, (x, Right v) : env)
+      where
+        (v, _) = evaluate e env1
+    Just (Right v) -> (v, env)
+evaluate (Decl x e body) env = (v, env)
   where
     -- Prepend new variable binding to the environment to evaluate the body
-    newEnv = (x, ExpClosure (e, newEnv)) : env
-evaluate (If cond e1 e2) env = if b then evaluate e1 env else evaluate e2 env
+    newEnv = (x, Left (ExpClosure (e, newEnv))) : env
+    -- Drop binding for x after evaluating the body to respect lexical scoping
+    (v, _) = evaluate body newEnv
+evaluate (If cond e1 e2) env = if b then evaluate e1 env1 else evaluate e2 env1
   where
     -- Evaluate condition expression to determine which branch to take
-    (VBool b) = evaluate cond env
+    (VBool b, env1) = evaluate cond env
 -- Create closure with current environment for static scoping
-evaluate (Func x body) env = VClosure x body env
-evaluate (Call f args) env = evaluate body newEnv
+evaluate (Func x body) env = (VClosure x body env, env)
+evaluate (Call f args) env = (v, env2)
   where
-    (VClosure xs body closeEnv) = evaluate f env
+    (VClosure xs body env1, env2) = evaluate f env
+    -- Drop binding for x after evaluating the function body to respect lexical scoping
+    (v, _) = evaluate body newEnv
     -- Prepend new binding to the closure environment to evaluate the body
-    newEnv = buildEnv xs args ++ closeEnv
+    newEnv = buildEnv xs args ++ env1
     buildEnv :: Params -> Exp -> Env
     buildEnv (PVars []) (Args []) = []
-    buildEnv (PVars ((PVar x : xs))) (Args (arg : args)) = (x, ExpClosure (arg, env)) : buildEnv (PVars xs) (Args args)
-evaluate (Arr es) env = VArr (map (\e -> evaluate e env) es)
-evaluate (Index e1 e2) env = arr !! i
+    buildEnv (PVars ((PVar x : xs))) (Args (arg : args)) = (x, Left (ExpClosure (arg, env))) : buildEnv (PVars xs) (Args args)
+evaluate (Arr es) env = (VArr (map (\e -> fst (evaluate e env)) es), env)
+evaluate (Index e1 e2) env = (arr !! i, env2)
   where
-    (VArr arr) = evaluate e1 env
-    (VInt i) = evaluate e2 env
+    (VArr arr, env1) = evaluate e1 env
+    (VInt i, env2) = evaluate e2 env1
 
 execute :: Exp -> Value
-execute e = evaluate e []
+execute e = fst (evaluate e [])
