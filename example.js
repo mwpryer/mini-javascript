@@ -36,8 +36,8 @@
 // f(5) // 7 (lexical scoping)
 
 // var x = 9;
-// var f = function (foo) {
-//   foo(x)
+// var f = function (g) {
+//   g(x)
 // };
 // var add = function (x) {
 //   function (y) {

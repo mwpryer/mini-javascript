@@ -35,12 +35,11 @@ evaluate (Binary op e1 e2) env = (binary op v1 v2, env2)
     (v1, env1) = evaluate e1 env
     (v2, env2) = evaluate e2 env1
 -- Search environment for variable (left to right) and evaluate it under its closure or return its value
-evaluate (Var x) env =
-  case lookup x env of
-    Just (Left (ExpClosure (e, env1))) -> (v, (x, Right v) : env)
-      where
-        (v, _) = evaluate e env1
-    Just (Right v) -> (v, env)
+evaluate (Var x) env = case lookup x env of
+  Just (Left (ExpClosure (e, env1))) -> (v, (x, Right v) : env)
+    where
+      (v, _) = evaluate e env1
+  Just (Right v) -> (v, env)
 evaluate (Decl x e body) env = (v, env)
   where
     -- Prepend new variable binding to the environment to evaluate the body
@@ -64,9 +63,9 @@ evaluate (Call f args) env = (v, env2)
     buildEnv (PVars []) (Args []) = []
     buildEnv (PVars ((PVar x : xs))) (Args (arg : args)) = (x, Left (ExpClosure (arg, env))) : buildEnv (PVars xs) (Args args)
 evaluate (Arr es) env = (VArr (map (\e -> fst (evaluate e env)) es), env)
-evaluate (Index e1 e2) env = (arr !! i, env2)
+evaluate (Index e1 e2) env = (a !! i, env2)
   where
-    (VArr arr, env1) = evaluate e1 env
+    (VArr a, env1) = evaluate e1 env
     (VInt i, env2) = evaluate e2 env1
 
 execute :: Exp -> Value
