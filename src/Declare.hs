@@ -99,11 +99,11 @@ showExp (Call f args) = showExp f ++ "(" ++ showExp args ++ ")"
 showExp (Args es) = intercalate ", " (map showExp es)
 showExp (Arr es) = "[" ++ intercalate ", " (map showExp es) ++ "]"
 
--- Variable bindings are now closures to satisfy call-by-name evaluation
+-- Variable bindings are closures to satisfy call-by-need evaluation
 newtype ExpClosure = ExpClosure (Exp, Env) deriving (Eq)
 
 -- Represents association of a variable with its value
-type Binding = (String, ExpClosure)
+type Binding = (String, Either ExpClosure Value)
 
 -- Execution environment for mapping variables to values
 type Env = [Binding]
