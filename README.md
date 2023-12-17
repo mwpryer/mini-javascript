@@ -130,9 +130,9 @@ To build the project, you will need [Stack](https://docs.haskellstack.org/en/sta
 
 ```bash
 # Build the project
-$ stack build
+stack build
 # Read and evaluate file
-$ stack exec mjs example.js
+stack exec mjs example.js
 ```
 
 ### Executable
@@ -141,7 +141,7 @@ An executable produced by Stack can just as easily be used directly in place of 
 
 ```bash
 # Create executable
-$ stack install
+stack install
 ```
 
 The executable file will be copied to some directory on your machine. Stack will helpfully print the path to your terminal for you to navigate to or to add to your PATH. You can then run the interpreter by executing it using:
@@ -156,14 +156,14 @@ To enter the REPL, use:
 
 ```bash
 # REPL
-$ ./mjs
+./mjs
 ```
 
 Whilst in the REPL you can load and evaluate files using:
 
 ```bash
 # Read and evaluate file in REPL
-$ :load example.js
+:load example.js
 ```
 
 ## Todo
